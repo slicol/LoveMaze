@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:view="com.tencent.QQPet.Slicol.LoveMaze.view.*"
+	width="640" height="400" backgroundColor="#180202" backgroundAlpha="0.92" 
+	borderStyle="solid" borderThickness="2" borderColor="#E8EDF7" alpha="1.0" 
+	cornerRadius="5" creationComplete="onCreationComplete()" >
+	<view:MazeView id="mazeView" x="34" y="46">
+	</view:MazeView>
+	<mx:Button x="501" y="322" label="开始" fontSize="12" width="86" click="onBtnStart()"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tencent.QQPet.Slicol.LoveMaze.event.GameStartEvent;
+			
+			private function onCreationComplete():void
+			{
+				//字体镂空补丁
+				this.filters = new Array(new DropShadowFilter(0,0,0,0,0,0,0,0));
+			}
+			
+			private function onBtnStart():void
+			{
+				var e:GameStartEvent = new GameStartEvent;
+				e.view = mazeView;
+				e.dispatch();
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>

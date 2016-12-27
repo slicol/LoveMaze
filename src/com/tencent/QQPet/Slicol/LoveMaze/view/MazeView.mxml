@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="400" height="300" borderStyle="solid" borderColor="#FBFDFF" 
+	cornerRadius="5" alpha="1.0" backgroundColor="#292020"
+	 verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.tencent.QQPet.Slicol.LoveMaze.event.ViewMoveEvent;
+		
+			private var map:Array;
+			private var view:Image;
+			private var dx:Number = 0.0;
+			private var dy:Number = 0.0;
+			
+			public function load(w:int,h:int,map:Array):void
+			{
+				this.map = map;
+				this.view = this.imgView;
+				this.view.graphics.clear();
+				var w:int = map.length;
+				var h:int = map[0].length;
+				dx = this.view.width / w;
+				dy = this.view.height / h;
+			}
+			
+			public function drawRectMap(x1:int,y1:int,x2:int,y2:int,map:Array):void
+			{
+				this._drawRectMap(this.view,x1,y1,x2,y2,map);
+			}
+			
+			public function drawCircleMap(x:int,y:int,r:int,map:Array):void
+			{
+				this._drawCircleMap(this.view,x,y,r,map);
+			}
+			
+			private function _drawRectMap(v:Image,x1:int,y1:int,x2:int,y2:int,map:Array):void
+			{
+				var x:int;
+				var y:int;
+				var w:int = map.length;
+				var h:int = map[0].length;
+				var dx:Number = v.width / w;
+				var dy:Number = v.height / h;
+	
+				if(x1 < 0) x1 = 0;
+				if(x2 > w) x2 = w;
+				if(y1 < 0) y1 = 0;
+				if(y2 > h) y2 = h;
+				
+				var flag:Boolean = false;
+				
+				v.graphics.clear();
+				v.graphics.lineStyle(4,0xff0000);
+				
+				for(x = x1; x < x2; ++x)
+				{
+					flag = false;
+					for(y = y1; y < y2; ++y)
+					{
+						if(map[x][y] == 1)
+						{
+							if(flag)
+							{
+								v.graphics.lineTo(x*dx, y*dy);
+							}
+							else
+							{
+								v.graphics.moveTo(x*dx, y*dy);
+							}
+							
+							flag = true;
+							
+							if(x > 0)
+							{
+								if(map[x - 1][y] == 1)
+								{
+									v.graphics.lineTo((x-1)*dx, y*dy);
+								}
+								else
+								{
+									if(y > 0)
+									{
+										if(map[x - 1][y - 1] == 1)
+										{
+											v.graphics.lineTo((x-1)*dx, (y-1)*dy);
+										}
+									}
+									if(y - 1 < h)
+									{
+										if(map[x - 1][y + 1] == 1)
+										{
+											v.graphics.lineTo((x-1)*dx, (y+1)*dy);
+										}
+									}
+								}
+							}
+							
+							v.graphics.moveTo(x*dx, y*dy);
+						}
+						else
+						{
+							flag = false;
+						}
+					}
+					
+				}				
+			}
+			
+			private function _drawCircleMap(v:Image,x:int,y:int,r:int,map:Array):void
+			{
+				var w:int = map.length;
+				var h:int = map[0].length;
+				var dx:Number = v.width / w;
+				var dy:Number = v.height / h;
+				
+				var x1:int = x - r;
+				var x2:int = x + r;
+				var y1:int = y - r;
+				var y2:int = y + r;
+				
+				if(x1 < 0) x1 = 0;
+				if(x2 > w) x2 = w;
+				if(y1 < 0) y1 = 0;
+				if(y2 > h) y2 = h;
+				
+				var flag:Boolean = false;
+				
+				v.graphics.clear();
+				v.graphics.lineStyle(4,0xff0000);
+				
+				for(x = x1; x < x2; ++x)
+				{
+					flag = false;
+					for(y = y1; y < y2; ++y)
+					{
+						if(map[x][y] == 1)
+						{
+							if(flag)
+							{
+								v.graphics.lineTo(x*dx, y*dy);
+							}
+							else
+							{
+								v.graphics.moveTo(x*dx, y*dy);
+							}
+							
+							flag = true;
+							
+							if(x > 0)
+							{
+								if(map[x - 1][y] == 1)
+								{
+									v.graphics.lineTo((x-1)*dx, y*dy);
+								}
+								else
+								{
+									if(y > 0)
+									{
+										if(map[x - 1][y - 1] == 1)
+										{
+											v.graphics.lineTo((x-1)*dx, (y-1)*dy);
+										}
+									}
+									if(y - 1 < h)
+									{
+										if(map[x - 1][y + 1] == 1)
+										{
+											v.graphics.lineTo((x-1)*dx, (y+1)*dy);
+										}
+									}
+								}
+							}
+							
+							v.graphics.moveTo(x*dx, y*dy);
+						}
+						else
+						{
+							flag = false;
+						}
+					}
+					
+				}				
+			}
+			
+			
+			public function drawDirection(x:int,y:int,dir:int):void
+			{
+				var size:int = 2;
+				var x1:int;
+				var y1:int;
+				var x2:int;
+				var y2:int;
+				var x3:int;
+				var y3:int;
+				switch(dir)
+				{
+				case 0:
+					x1 = x;
+					y1 = y + size;
+					x2 = x + size;
+					y2 = y;
+					x3 = x;
+					y3 = y - size;
+					break;
+				case 1:
+					x1 = x + size;
+					y1 = y;
+					x2 = x;
+					y2 = y - size;
+					x3 = x - size;
+					y3 = y;
+					break;
+				case 2:
+					x1 = x;
+					y1 = y - size;
+					x2 = x - size;
+					y2 = y;
+					x3 = x;
+					y3 = y + size;
+					break;
+				case 3:
+					x1 = x - size;
+					y1 = y;
+					x2 = x;
+					y2 = y + size;
+					x3 = x + size;
+					y3 = y;
+					break;
+				}
+				
+				
+				view.graphics.lineStyle(2,0xeeeeee,0.8);
+				view.graphics.moveTo(x1*dx,y1*dy);
+				view.graphics.lineTo(x2*dx,y2*dy);
+				view.graphics.lineTo(x3*dx,y3*dy);
+				view.graphics.lineTo(x1*dx,y1*dy);
+				
+			}
+			
+			
+			private function onMouseMove(event:MouseEvent):void
+			{
+				if(map == null) return;
+				var e:ViewMoveEvent = new ViewMoveEvent;
+				e.x = (event.localX) / dx;
+				e.y = (event.localY) / dy;
+				e.dispatch();
+				
+				/*
+				var curX:int = 30;
+				var curY:int = 30;
+				
+				this.drawRectMap(curX-10,curY-10,curX+10,curY+10,map);
+				
+				if(x > curX) this.drawDirection(curX + 12, curY,0);
+				if(x < curX) this.drawDirection(curX - 13, curY,2);
+				if(y > curY) this.drawDirection(curX, curY + 12,3);
+				if(y < curY) this.drawDirection(curX, curY - 13,1);
+				*/
+				
+			}
+			
+
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Image id="imgView" x="2" y="2" width="400" height="300"/>
+	<mx:Canvas id="imgMask" x="2" y="2" width="400" height="300" 
+		mouseMove="onMouseMove(event)"/>
+</mx:Canvas>
